@@ -19,17 +19,17 @@ class PresenceFeedController extends ControllerBase {
    */
   public function feed(): JsonResponse {
     $now = \Drupal::time()->getRequestTime();
-    $start_window = $now - (2 * 3600); // 2 hours ago
-    $end_window = $now + (7 * 24 * 3600); // 1 week from now
+    $start_of_day = strtotime('today', $now);
+    $end_of_day = strtotime('tomorrow', $start_of_day) - 1;
 
     $profile_ids = \Drupal::entityQuery('profile')
       ->condition('type', 'coordinator')
       ->condition('status', 1)
       ->condition('uid.entity.roles', 'facilitator')
-      ->condition('field_coordinator_hours.value', $start_window, '>=')
-      ->condition('field_coordinator_hours.value', $end_window, '<')
+      ->condition('field_coordinator_hours.value', $end_of_day, '<=') // Schedule starts before the end of today
+      ->condition('field_coordinator_hours.end_value', $start_of_day, '>=') // Schedule ends after the start of today
       ->sort('field_coordinator_hours.value', 'ASC')
-      ->accessCheck(TRUE)
+      ->accessCheck(FALSE)
       ->execute();
 
     if (empty($profile_ids)) {
