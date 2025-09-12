@@ -29,7 +29,13 @@ class DisplayController extends ControllerBase {
     }
 
     $feed_url = '/facilitator-display/feed';
-    $refresh_interval = $config->get('refresh_interval') * 1000; // Convert to milliseconds
+    $refresh_interval = ($config->get('refresh_interval') ?: 30) * 1000; // Convert to milliseconds
+    $background_image_url = $config->get('background_image_url');
+
+    $body_style = '';
+    if ($background_image_url) {
+      $body_style = "style=\"background-image: url('{$background_image_url}'); background-size: cover; background-position: center;\"";
+    }
 
     $css = "
       body { font-family: sans-serif; background-color: #f0f0f0; }
@@ -49,7 +55,7 @@ class DisplayController extends ControllerBase {
   <title>Facilitator Display</title>
   <style>{$css}</style>
 </head>
-<body>
+<body {$body_style}>
   <h1>Facilitators On Site</h1>
   <div id="facilitator-grid" class="facilitator-grid"></div>
 
