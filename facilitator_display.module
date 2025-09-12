@@ -1,0 +1,29 @@
+<?php
+
+/**
+ * @file
+ * Primary module file for the Facilitator Display module.
+ */
+
+use Drupal\Core\Entity\EntityInterface;
+
+/**
+ * Implements hook_entity_insert().
+ */
+function facilitator_display_entity_insert(EntityInterface $entity) {
+  if ($entity->getEntityTypeId() !== 'access_control_log' || $entity->bundle() !== 'access_control_request') {
+    return;
+  }
+
+  $user = $entity->get('field_access_request_user')->entity;
+
+  // Check if the user has the 'facilitator' role.
+  if ($user && in_array('facilitator', $user->getRoles())) {
+    $term = $entity->get('field_access_request_permission')->entity;
+    $door = $term ? $term->label() : 'Unknown';
+    $ts = (int) $entity->get('created')->value ?: \Drupal::time()->getRequestTime();
+
+    // Call the service to update the facilitator's presence.
+    \Drupal::service('facilitator_display.updater')->upsert($user, $door, $ts);
+  }
+}

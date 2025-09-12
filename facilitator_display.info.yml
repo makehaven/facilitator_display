@@ -1,0 +1,8 @@
+name: 'Facilitator Display'
+type: module
+description: 'Provides a real-time display of on-site facilitators and their schedules.'
+core_version_requirement: ^10 || ^11
+package: Custom
+dependencies:
+  - drupal:user
+  - drupal:profile

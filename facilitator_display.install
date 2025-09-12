@@ -1,0 +1,44 @@
+<?php
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the Facilitator Display module.
+ */
+
+use Drupal\Core\Database\Schema;
+
+/**
+ * Implements hook_schema().
+ */
+function facilitator_display_schema() {
+  $schema['facilitator_presence'] = [
+    'description' => 'Stores the most recent presence information for facilitators.',
+    'fields' => [
+      'uid' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => "The user ID of the facilitator.",
+      ],
+      'last_seen' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => "The timestamp of the facilitator's last seen presence.",
+      ],
+      'door' => [
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => "The door where the facilitator was last seen.",
+      ],
+    ],
+    'primary key' => ['uid'],
+    'indexes' => [
+      'last_seen' => ['last_seen'],
+    ],
+  ];
+  return $schema;
+}

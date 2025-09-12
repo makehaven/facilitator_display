@@ -1,0 +1,6 @@
+facilitator_display.settings_form:
+  title: 'Facilitator Display'
+  route_name: facilitator_display.settings_form
+  description: 'Configure the facilitator display settings.'
+  parent: system.admin_config_system
+  weight: 99

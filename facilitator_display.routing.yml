@@ -1,0 +1,24 @@
+facilitator_display.settings_form:
+  path: '/admin/config/system/facilitator-display'
+  defaults:
+    _form: '\Drupal\facilitator_display\Form\SettingsForm'
+    _title: 'Facilitator Display Settings'
+  requirements:
+    _permission: 'administer site configuration'
+
+facilitator_display.feed:
+  path: '/facilitator-display/feed'
+  defaults:
+    _controller: '\Drupal\facilitator_display\Controller\PresenceFeedController::feed'
+    _title: 'Facilitator Presence Feed'
+  requirements:
+    _permission: 'access content'
+
+facilitator_display.display_page:
+  path: '/facilitator-display/display/{code_word}'
+  defaults:
+    _controller: '\Drupal\facilitator_display\Controller\DisplayController::displayPage'
+    _title: 'Facilitator Display'
+  requirements:
+    _permission: 'access content'
+    
