@@ -1,0 +1,6 @@
+{
+    "name": "makehaven/facilitator_display",
+    "type": "drupal-custom-module",
+    "description": "Displays facilitator schedule",
+    "license": "GPL-2.0-or-later"
+}
