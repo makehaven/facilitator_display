@@ -6,3 +6,4 @@ package: Custom
 dependencies:
   - drupal:user
   - drupal:profile
+  - access_display

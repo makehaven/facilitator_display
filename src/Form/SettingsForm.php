@@ -83,6 +83,25 @@ class SettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('background_image_url'),
     ];
 
+    $default_css = $config->get('custom_css') ?: "
+      body { font-family: sans-serif; background-color: #f0f0f0; }
+      .facilitator-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; padding: 20px; }
+      .facilitator-card { background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); overflow: hidden; }
+      .facilitator-card.present { border-left: 5px solid #4CAF50; }
+      .facilitator-photo { width: 100%; height: 200px; object-fit: cover; }
+      .facilitator-info { padding: 15px; }
+      .facilitator-name { font-size: 1.2em; font-weight: bold; }
+      .facilitator-focus, .facilitator-schedule, .facilitator-status { margin-top: 10px; }
+    ";
+
+    $form['custom_css'] = [
+      '#type' => 'textarea',
+      '#title' => $this->t('Custom CSS'),
+      '#description' => $this->t('Add custom CSS to style the display page.'),
+      '#default_value' => $default_css,
+      '#rows' => 10,
+    ];
+
     return parent::buildForm($form, $form_state);
   }
 
@@ -105,6 +124,7 @@ class SettingsForm extends ConfigFormBase {
       ->set('presence_timeout', $form_state->getValue('presence_timeout'))
       ->set('refresh_interval', $form_state->getValue('refresh_interval'))
       ->set('background_image_url', $form_state->getValue('background_image_url'))
+      ->set('custom_css', $form_state->getValue('custom_css'))
       ->save();
     parent::submitForm($form, $form_state);
   }

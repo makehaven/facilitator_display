@@ -1,4 +1,4 @@
 services:
-  facilitator_display.updater:
-    class: Drupal\facilitator_display\Service\PresenceUpdater
-    arguments: ['@database']
+#  facilitator_display.updater:
+#    class: Drupal\facilitator_display\Service\PresenceUpdater
+#    arguments: ['@database']
