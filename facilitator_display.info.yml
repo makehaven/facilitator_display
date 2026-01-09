@@ -2,8 +2,9 @@ name: 'Facilitator Display'
 type: module
 description: 'Provides a real-time display of on-site facilitators and their schedules.'
 core_version_requirement: ^10 || ^11
-package: Custom
+package: Makerspace
 dependencies:
   - drupal:user
   - drupal:profile
   - access_display
+configure: facilitator_display.settings_form
