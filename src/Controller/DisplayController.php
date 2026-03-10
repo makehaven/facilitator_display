@@ -81,7 +81,7 @@ class DisplayController extends ControllerBase {
 
       function updateClock() {
         const now = new Date();
-        clockEl.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        clockEl.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', timeZone: 'America/New_York' });
       }
       setInterval(updateClock, 1000);
       updateClock();
