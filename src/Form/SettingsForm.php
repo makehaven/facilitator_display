@@ -83,6 +83,40 @@ class SettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('background_image_url'),
     ];
 
+    $form['fallback'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Fallback content'),
+      '#open' => TRUE,
+      '#description' => $this->t('Shown below the facilitator grid when few or no facilitators are scheduled. Rotates between a QR code, top badge earners, recently earned badges, and upcoming events.'),
+    ];
+
+    $form['fallback']['fallback_enabled'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Enable fallback content'),
+      '#default_value' => $config->get('fallback_enabled') ?? TRUE,
+    ];
+
+    $form['fallback']['fallback_threshold'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Show fallback when fewer than N facilitator cards are visible'),
+      '#description' => $this->t('Default: 5. The fallback panel renders full-screen when there are 0 cards, and as a strip below the grid when there are 1 to N-1 cards.'),
+      '#default_value' => $config->get('fallback_threshold') ?: 5,
+      '#min' => 1,
+    ];
+
+    $form['fallback']['qr_target_url'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('QR code target URL'),
+      '#description' => $this->t('Where the on-screen QR code sends people. Defaults to the public facilitator schedule.'),
+      '#default_value' => $config->get('qr_target_url') ?: '/facilitator/schedules',
+    ];
+
+    $form['fallback']['qr_caption'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('QR caption'),
+      '#default_value' => $config->get('qr_caption') ?: 'Scan for the facilitator schedule',
+    ];
+
     $default_css = $config->get('custom_css') ?: "
       body { font-family: sans-serif; background-color: #f0f0f0; }
       .facilitator-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; padding: 20px; }
@@ -125,6 +159,10 @@ class SettingsForm extends ConfigFormBase {
       ->set('refresh_interval', $form_state->getValue('refresh_interval'))
       ->set('background_image_url', $form_state->getValue('background_image_url'))
       ->set('custom_css', $form_state->getValue('custom_css'))
+      ->set('fallback_enabled', (bool) $form_state->getValue('fallback_enabled'))
+      ->set('fallback_threshold', (int) $form_state->getValue('fallback_threshold'))
+      ->set('qr_target_url', $form_state->getValue('qr_target_url'))
+      ->set('qr_caption', $form_state->getValue('qr_caption'))
       ->save();
     parent::submitForm($form, $form_state);
   }

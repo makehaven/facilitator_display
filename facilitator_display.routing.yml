@@ -14,6 +14,14 @@ facilitator_display.feed:
   requirements:
     _permission: 'access content'
 
+facilitator_display.fallback_feed:
+  path: '/facilitator-display/fallback-feed'
+  defaults:
+    _controller: '\Drupal\facilitator_display\Controller\FallbackFeedController::feed'
+    _title: 'Facilitator Display Fallback Feed'
+  requirements:
+    _permission: 'access content'
+
 facilitator_display.display_page:
   path: '/facilitator-display/display/{code_word}'
   defaults:
