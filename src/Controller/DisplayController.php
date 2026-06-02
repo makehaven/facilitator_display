@@ -30,6 +30,10 @@ class DisplayController extends ControllerBase {
 
     $feed_url = '/facilitator-display/feed';
     $fallback_feed_url = '/facilitator-display/fallback-feed';
+    // Self-hosted QR library. Loaded from this module (same origin) so the
+    // kiosk never depends on an external CDN being reachable — an unreachable
+    // CDN script in <head> white-screens the whole board (see below).
+    $qr_lib_url = base_path() . \Drupal::service('extension.list.module')->getPath('facilitator_display') . '/js/qrcode.min.js';
     $refresh_interval = ($config->get('refresh_interval') ?: 30) * 1000; // Convert to milliseconds
     $background_image_url = $config->get('background_image_url');
 
@@ -104,7 +108,7 @@ class DisplayController extends ControllerBase {
   <title>Facilitator Display</title>
   <style>{$css}
 {$fallback_css}</style>
-  <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
+  <script src="{$qr_lib_url}" defer></script>
 </head>
 <body {$body_style}>
   <header>
