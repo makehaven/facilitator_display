@@ -268,9 +268,28 @@ class DisplayController extends ControllerBase {
         }
       }
 
+      // --- Self-healing ---
+      // The kiosk tab runs unattended for weeks; if its JS wedges or the
+      // feed starts failing, nothing external recovers it. Reloads are
+      // gated on a HEAD probe of this page: reloading while the network
+      // is down would strand the kiosk on a browser error page that has
+      // no JS left to retry, which is worse than staying up and polling.
+      let consecutiveFailures = 0;
+      const failureReloadThreshold = 10; // ~5 min at the 30s default interval
+
+      function probeAndReload() {
+        fetch(window.location.href, { method: 'HEAD', cache: 'no-store' })
+          .then(r => { if (r.ok) window.location.reload(); })
+          .catch(() => {});
+      }
+
+      let fetching = false;
+
       async function updateDisplay() {
+        if (fetching) return;
+        fetching = true;
         try {
-          const response = await fetch(feedUrl);
+          const response = await fetch(feedUrl, { cache: 'no-store' });
           if (!response.ok) throw new Error('Network response was not ok ' + response.statusText);
           const data = await response.json();
           const nowTs = data.now || Math.floor(Date.now() / 1000);
@@ -307,8 +326,20 @@ class DisplayController extends ControllerBase {
           });
 
           applyFallbackVisibility(items.length);
+          consecutiveFailures = 0;
         } catch (error) {
           console.error('Error fetching facilitator feed:', error);
+          consecutiveFailures++;
+          // Never sit on a blank board: with no cards to show, surface the
+          // QR/fallback panel (QR renders locally, no network needed).
+          if (grid.children.length === 0) {
+            applyFallbackVisibility(0);
+          }
+          if (consecutiveFailures >= failureReloadThreshold) {
+            probeAndReload();
+          }
+        } finally {
+          fetching = false;
         }
       }
 
@@ -322,6 +353,7 @@ class DisplayController extends ControllerBase {
       setInterval(updateDisplay, {$refresh_interval});
       setInterval(renderTile, 10000);        // rotate tile every 10s
       setInterval(loadFallback, 300000);     // refresh fallback data every 5 min
+      setInterval(probeAndReload, 86400000); // hard reload daily so a leaking tab never runs for weeks
     })();
   </script>
 </body>
