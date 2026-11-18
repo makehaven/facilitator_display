@@ -76,9 +76,11 @@ class DisplayController extends ControllerBase {
 
     $css = $config->get('custom_css') ?: $default_css;
 
-    // Fallback panel styles are always appended so they can't be lost when
-    // an admin overrides custom_css.
+    // Fallback panel styles and the hidden pointer (this is a wall screen
+    // with no mouse) are always appended so they can't be lost when an admin
+    // overrides custom_css.
     $fallback_css = "
+      html, body, * { cursor: none !important; }
       #fallback-panel { display: none; gap: 24px; margin-top: 24px; padding: 24px; background: rgba(255,255,255,0.95); border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); align-items: stretch; }
       #fallback-panel.visible { display: flex; }
       #fallback-panel.fullscreen { min-height: 78vh; align-items: center; }
